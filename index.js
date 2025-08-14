@@ -4,14 +4,23 @@ const app = express();
 const connectDB = require('./connnections/connect');
 const port = 8001;
 const URL = require("./models/url"); 
+const path = require('path'); // for ejs views
+const staticRouter = require('./routes/StaticRouter');
 
-
+app.use(express.urlencoded({ extended: false })); // middleware to parse URL-encoded bodies
 app.use(express.json());  // mware to parse JSON bodies
 // connection with db
 connectDB("mongodb://localhost:27017/shorturl")
 .then(() => console.log("Connected to the database"));
 
+// Serve static files
+app.set('view engine', 'ejs');
+app.set('views' , path.resolve('./views')); // set views directory
+
+
 app.use("/url", urlRoute);
+app.use("/" , staticRouter);
+
 
 
 app.get("/:shortid", async(req, res) => {

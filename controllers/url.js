@@ -10,7 +10,7 @@ await URL.create({
     redirectURL : body.url,
     visitHistory : [],
 })
-return res.status(201).json({ shortID : shortID, redirectURL : body.url });
+return res.render("home", { shortID: shortID, redirectURL: body.url });
 } 
 
 module.exports = {
