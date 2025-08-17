@@ -51,7 +51,7 @@
 
 <body>
     <h1>URL Shortener</h1>
-    <% if (shortID) { %>
+    <% if (typeof shortID !== "undefined" && shortID) { %>
      <p>URL Generated: http://localhost:8001/<%= shortID %></p>
     <% } %>
     <div>

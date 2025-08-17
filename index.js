@@ -4,11 +4,15 @@ const app = express();
 const connectDB = require('./connnections/connect');
 const port = 8001;
 const URL = require("./models/url"); 
+const RestrictToLoggedInUserOnly = require('./mwares/auth');
 const path = require('path'); // for ejs views
 const staticRouter = require('./routes/StaticRouter');
+const UserRouter = require('./routes/user');
+const cookieParser = require('cookie-parser');
 
 app.use(express.urlencoded({ extended: false })); // middleware to parse URL-encoded bodies
 app.use(express.json());  // mware to parse JSON bodies
+app.use(cookieParser()); // middleware to parse cookies
 // connection with db
 connectDB("mongodb://localhost:27017/shorturl")
 .then(() => console.log("Connected to the database"));
@@ -18,9 +22,9 @@ app.set('view engine', 'ejs');
 app.set('views' , path.resolve('./views')); // set views directory
 
 
-app.use("/url", urlRoute);
+app.use("/url", RestrictToLoggedInUserOnly ,  urlRoute);
 app.use("/" , staticRouter);
-
+app.use("/user" , UserRouter);
 
 
 app.get("/:shortid", async(req, res) => {
