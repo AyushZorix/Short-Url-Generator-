@@ -16,7 +16,8 @@ const user =  await User.findOne({email,password})
 if( !user) return res.render('login', {error: "Invalid email or password"});
 
 const token = Setuser(user)
-res.cookie("sessionId", token)
-    return res.redirect("/");
+// res.cookie("sessionId", token)
+
+    return res.json({ token});
 }
 module.exports = {UserSignup , UserLogin};
