@@ -13,6 +13,12 @@ const userSchema = new mongoose.Schema({
         type : String , 
         requirewd : true,
     },
+    role : {
+        type : String,
+        required : true,
+        default : "NORMAL",
+
+    },
      
    } , {timestamps: true});
 
