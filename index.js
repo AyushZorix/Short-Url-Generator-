@@ -26,7 +26,7 @@ app.set('view engine', 'ejs');
 app.set('views' , path.resolve('./views')); // set views directory
 
 
-app.use("/url", restrictTO(["NORMAL" , "ADMIN"]) ,  urlRoute);
+app.use("/url", restrictTO(["NORMAL" , "ADMIN"]) ,  urlRoute);  // taken admin and normal only for the restrictions
 app.use("/" , staticRouter);
 app.use("/user" , UserRouter);
 
