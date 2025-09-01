@@ -1,115 +1,195 @@
-# Short URL Generator
+ #  Short URL Generator
 
-A lightweight and secure **URL shortener** built with **Node.js**, **Express**, and **MongoDB**. Includes **user authentication** so only registered users can create and manage short links.
+A **secure and lightweight URL shortener** built with **Node.js**,
+**Express**, and **MongoDB**, featuring **JWT-based authentication**,
+**role-based authorization**, and **visit analytics**.
 
-## ✨ Features
+##  Features
 
-*  **User Authentication** – Signup, login, and session-based access
-*  **URL Shortening** – Convert long URLs into short, shareable links
-*  **Unique IDs** – Generated using `nanoid`
-*  **Analytics** – Track visits with timestamps
-*  **Database** – Store mappings and user data in MongoDB
-*  **REST API** – Tested with Postman
-*  **Views** – Clean EJS templates for UI
+-    **User Authentication** -- Signup & login with **JWT tokens**
+-    **Role-Based Access Control (RBAC)** -- Separate permissions for
+    **normal users** and **admins**
+-    **URL Shortening** -- Convert long URLs into short, shareable
+    links
+-    **Unique IDs** -- Generated using `nanoid`
+-    **Analytics** -- Track visits with timestamps and user details
+-    **MongoDB Database** -- Store users, short links, and analytics
+-    **REST API** -- Fully tested with Postman
+-    **EJS Templates** -- Clean and minimal UI
 
-## 🛠 Tech Stack
+------------------------------------------------------------------------
 
-* **Backend**: Node.js, Express
-* **Database**: MongoDB (Mongoose)
-* **Authentication**: Cookie + Session (`uuid`, `cookie-parser`)
-* **ID Generation**: nanoid
-* **Templating**: EJS
-* **Testing**: Postman
+##  Tech Stack
 
-## 🔑 Authentication APIs
+-   **Backend**: Node.js, Express
+-   **Database**: MongoDB (Mongoose)
+-   **Authentication**: **JWT (JSON Web Tokens)**
+-   **Authorization**: Role-based (Normal User / Admin)
+-   **ID Generation**: nanoid
+-   **Templating**: EJS
+-   **Testing**: Postman
+
+------------------------------------------------------------------------
+
+##  Authentication & Authorization
+
+We initially implemented **session-based auth with cookies**, but later
+migrated to a **JWT-based stateless authentication system** for
+scalability and security.
+
+### User Roles
+
+-   **Normal User** -- Can create and manage their own short links
+-   **Admin** -- Can manage all users and links
+
+------------------------------------------------------------------------
+
+##  Authentication APIs
 
 ### 1️⃣ User Signup
-**POST** `/user/signup`
 
-```json
+**POST** `/api/auth/signup`
+
+``` json
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "securepassword"
+  "name": "Ayush Bhandari",
+  "email": "ayush@example.com",
+  "password": "securepassword",
+  "role": "user"
 }
 ```
 
 ### 2️⃣ User Login
-**POST** `/user/login`
 
-```json
+**POST** `/api/auth/login`
+
+``` json
 {
-  "email": "john@example.com",
+  "email": "ayush@example.com",
   "password": "securepassword"
 }
 ```
 
-✔ On success → session cookie is created.
+✔ On success → returns a **JWT token**
 
-## 🌐 URL APIs (Requires Login)
+------------------------------------------------------------------------
+
+## 🌐 URL APIs (JWT Required)
 
 ### 3️⃣ Create Short URL
-**POST** `/url`
 
-```json
+**POST** `/api/url`
+
+**Headers**
+
+``` http
+Authorization: Bearer <JWT_TOKEN>
+```
+
+**Body**
+
+``` json
 {
   "url": "https://example.com/long-page"
 }
 ```
 
 **Response**
-```json
+
+``` json
 {
   "shortID": "abc123",
-  "redirectURL": "https://example.com/long-page"
+  "redirectURL": "https://example.com/long-page",
+  "createdBy": "userId123"
 }
 ```
 
-### 4️⃣ Redirect to Original URL
-**GET** `/:shortid`
-* Redirects user to the original URL
-* Stores visit timestamp in `visitHistory`
+------------------------------------------------------------------------
 
-## 🚀 Getting Started
+### 4️⃣ Redirect to Original URL
+
+**GET** `/:shortid`
+
+-   Redirects user to the original URL
+-   Stores visit timestamp in `visitHistory`
+
+------------------------------------------------------------------------
+
+### 5️⃣ Admin Routes (Restricted)
+
+**GET** `/api/admin/users`
+- List all registered users (Admin only)
+
+**DELETE** `/api/admin/url/:id`
+- Delete any short URL (Admin only)
+
+------------------------------------------------------------------------
+
+##  Getting Started
 
 ### 1. Clone the repo
-```bash
+
+``` bash
 git clone https://github.com/your-username/short-url-generator.git
 cd short-url-generator
 ```
 
 ### 2. Install dependencies
-```bash
+
+``` bash
 npm install
 ```
 
-### 3. Start MongoDB
-```bash
+### 3. Set environment variables
+
+Create a `.env` file:
+
+``` env
+PORT=8001
+MONGO_URI=mongodb://localhost:27017/shorturl
+JWT_SECRET=your_jwt_secret_key
+```
+
+### 4. Start MongoDB
+
+``` bash
 mongod
 ```
 
-### 4. Run the server
-```bash
+### 5. Run the server
+
+``` bash
 node index.js
 ```
 
 Server runs at 👉 **http://localhost:8001**
 
+------------------------------------------------------------------------
+
 ## 🔮 Future Enhancements
 
-*  Password hashing (`bcrypt`)
-*  JWT authentication option
-*  Expiry dates for short URLs
-*  Admin dashboard for analytics
+-   ⏳ Expiry dates for short URLs
+-   📈 Advanced analytics dashboard
+-   📬 Email verification & password reset
+-   🌐 Rate limiting & IP-based restrictions
 
-## 📝 License
+------------------------------------------------------------------------
 
-This project is licensed under the MIT License.
+##  License
+
+This project is licensed under the **MIT License**.
+
+------------------------------------------------------------------------
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/your-username/short-url-generator/issues).
+Contributions, issues, and feature requests are welcome!
+Check the [issues
+page](https://github.com/your-username/short-url-generator/issues).
 
-## ⭐ Show your support
+------------------------------------------------------------------------
 
-Give a ⭐ if this project helped you!
+## ⭐ Show Your Support
+
+If you like this project, consider giving it a ⭐ to support
+development!
